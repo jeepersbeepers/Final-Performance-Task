@@ -1,6 +1,6 @@
-#define RELAY_PIN 2
-#define airHumidity 12
-#define pump 11
+#define RELAY_PIN 7
+#define airHumidity A0
+#define pump 13
 
 #define THRESHOLD 530
 
@@ -27,7 +27,7 @@ void loop() {
     digitalWrite(pump, LOW);
   }
    Serial.print(" (");
-  Serial.print(value);
+  Serial.print(450);
   Serial.println(")");
 
   delay(1000);
