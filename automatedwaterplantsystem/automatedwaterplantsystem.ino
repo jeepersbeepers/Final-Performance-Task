@@ -27,7 +27,7 @@ int temperature = analogRead(AIR_TEMP_HUMIDITY_SENSOR); // Read temperature
  if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
     Serial.println("Temperature is high and air is dry. Starting watering...");
     digitalWrite(RELAY_PIN, HIGH);
-    delay(5000); // Adjust this delay according to your watering needs
+    delay(5000); 
     digitalWrite(RELAY_PIN, LOW);
     lastWateringTime = millis();
     Serial.println("Watering completed.");
