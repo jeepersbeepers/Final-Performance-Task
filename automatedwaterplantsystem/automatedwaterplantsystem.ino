@@ -1,33 +1,59 @@
 #define RELAY_PIN 7
-#define airHumidity A0
+#define AIR_TEMP_HUMIDITY_SENSOR A0
 
-#define THRESHOLD 530
+#define MAX_TEMPERATURE 30 // max air temperature that plant reads to pump water
+#define MAX_HUMIDITY 70    // max humidity level that plant reads to pump water
+#define WATERING_INTERVAL 60000 // Water every 60 seconds (1 minute)
+
+unsigned long lastWateringTime = 0;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(airHumidity, INPUT);
-  Serial.begin(9600);
+  pinMode(AIR_TEMP_HUMIDITY_SENSOR, INPUT);
   pinMode(RELAY_PIN, OUTPUT);
+  Serial.begin(9600);
+  
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int val = analogRead(airHumidity); // reads the analog value from sensor
-  Serial.println(val);
-  if(val > THRESHOLD)
-  {
-    Serial.print("The air temperature is DRY => activate pump");
-    digitalWrite(RELAY_PIN, HIGH);
-    
-  } else {
-    Serial.print("The air temperature is HUMID => deactivate the pump");
-    digitalWrite(RELAY_PIN, LOW);
-    
-  }
-   Serial.print(" (");
-  Serial.print(450);
-  Serial.println(")");
+int temperature = analogRead(AIR_TEMP_HUMIDITY_SENSOR); // Read temperature
+  int humidity = analogRead(AIR_TEMP_HUMIDITY_SENSOR);    // Read humidity
 
-  delay(1000);
+// Convert analog readings to actual values (assuming linear scaling)
+  float temperatureValue = map(temperature, 0, 1023, 0, 50); // Scale to 0-50°C
+  float humidityValue = map(humidity, 0, 1023, 0, 100);      // Scale to 0-100%
+
+ if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
+    Serial.println("Temperature is high and air is dry. Starting watering...");
+    digitalWrite(RELAY_PIN, HIGH);
+    delay(5000); // Adjust this delay according to your watering needs
+    digitalWrite(RELAY_PIN, LOW);
+    lastWateringTime = millis();
+    Serial.println("Watering completed.");
+  }
+
+  delay(1000); // Adjust delay according to your needs
 }
+
+
+
+//   int val = analogRead(AIR_TEMP_HUMIDITY_SENSOR); // reads the analog value from sensor
+//   Serial.println(val);
+//   if(val > THRESHOLD)
+//   {
+//     Serial.print("The air temperature is DRY => activate pump");
+//     digitalWrite(RELAY_PIN, HIGH);
+    
+//   } else {
+//     Serial.print("The air temperature is HUMID => deactivate the pump");
+//     digitalWrite(RELAY_PIN, LOW);
+    
+//   }
+//    Serial.print(" (");
+//   Serial.print(450);
+//   Serial.println(")");
+
+//   delay(1000);
+// }
 
