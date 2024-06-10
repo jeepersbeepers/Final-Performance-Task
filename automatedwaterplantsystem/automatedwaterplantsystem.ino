@@ -1,12 +1,10 @@
 #define RELAY_PIN 7
 #define airHumidity A0
-#define pump 13
 
 #define THRESHOLD 530
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(pump, OUTPUT);
   pinMode(airHumidity, INPUT);
   Serial.begin(9600);
   pinMode(RELAY_PIN, OUTPUT);
@@ -20,11 +18,11 @@ void loop() {
   {
     Serial.print("The air temperature is DRY => activate pump");
     digitalWrite(RELAY_PIN, HIGH);
-    digitalWrite(pump, HIGH);
+    
   } else {
     Serial.print("The air temperature is HUMID => deactivate the pump");
     digitalWrite(RELAY_PIN, LOW);
-    digitalWrite(pump, LOW);
+    
   }
    Serial.print(" (");
   Serial.print(450);
