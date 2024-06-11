@@ -36,24 +36,3 @@ int temperature = analogRead(AIR_TEMP_HUMIDITY_SENSOR); // Read temperature
   delay(1000); // Adjust delay according to your needs
 }
 
-
-
-//   int val = analogRead(AIR_TEMP_HUMIDITY_SENSOR); // reads the analog value from sensor
-//   Serial.println(val);
-//   if(val > THRESHOLD)
-//   {
-//     Serial.print("The air temperature is DRY => activate pump");
-//     digitalWrite(RELAY_PIN, HIGH);
-    
-//   } else {
-//     Serial.print("The air temperature is HUMID => deactivate the pump");
-//     digitalWrite(RELAY_PIN, LOW);
-    
-//   }
-//    Serial.print(" (");
-//   Serial.print(450);
-//   Serial.println(")");
-
-//   delay(1000);
-// }
-

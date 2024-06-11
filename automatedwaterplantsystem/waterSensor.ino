@@ -1,60 +1,59 @@
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include <Wire.h>  // Include the Wire library
+#include <LiquidCrystal_I2C.h>  // Include the LiquidCrystal_I2C library
 
-//Define the pins for the water level sensor and LCD display
-#define WATER_LEVEL_SENSOR_PIN A0
+#include <Time.h>  // Include the Time library
 
+// Define the address for the LCD
+#define I2C_ADDR 0x27
+#define BACKLIGHT_PIN 3
+#define En_pin 2
+#define Rw_pin 1
+#define Rs_pin 0
+#define D4_pin 4
+#define D5_pin 5
+#define D6_pin 6
+#define D7_pin 7
 
-//initialize the LCD display
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+// Initialize the LiquidCrystal_I2C library
+LiquidCrystal_I2C lcd(I2C_ADDR, En_pin, Rw_pin, Rs_pin, D4_pin, D5_pin, D6_pin, D7_pin);
 
-//Define a variable to store the water level sensor value
-int waterLevel;
+// Placeholder for checking water level
+void water_sensor() {
+    // Placeholder for checking water level
+    lcd.setCursor(0, 0);
+    lcd.print("Checking water level...");
+}
 
 void setup() {
-  // set up the LCD's number of columns and rows:
-  lcd.begin(16, 2);
+    // initialize the LCD
+    lcd.begin(16, 2);
 
-  // put your setup code here, to run once:
-  //Initialize the serial communication
-  Serial.begin(115200);
-
-  //Set the LCD display to 16x2 characters
-  lcd.begin(16, 2);
-
-  //Print a welcome message on the LCD display
-  lcd.print("Water Level Sensor");
-  lcd.setCursor(0, 1);
-  lcd.print("Running...");
-
-  //Wait for 1 minute before running the water level sensor again
-  delay(1000);
+    // Turn on the backlight
+    lcd.setBacklightPin(BACKLIGHT_PIN, POSITIVE);
+    lcd.setBacklight(HIGH);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //Read the water level sensor value
-  waterLevel = analogRead(WATER_LEVEL_SENSOR_PIN);
+    // time
+    unsigned long start_time = millis();
 
-  //Print the water level sensor value on the serial monitor
-  Serial.print("Water Level: ");
-  Serial.println(waterLevel);
+    while (true) {
+        water_sensor();
+        
+        // Wait for 10 seconds
+        delay(10000);
 
-  //Check if the water level is below a certain threshold
-  if (waterLevel < 500) {
-    //Print a warning message on the LCD display
-    lcd.clear();
-    lcd.print("Water Level Low!!!");
-    lcd.setCursor(0, 1);
-    lcd.print("Refill Required");
-  } else {
-    //Print a normal message on the LCD display
-    lcd.clear();
-    lcd.print("Water Level OK!!!");
-    lcd.setCursor(0, 1);
-    lcd.print("No Refill Needed");
-  }
+        // Calculate how long it took to check the water level
+        unsigned long end_time = millis();
+        unsigned long elapsed_time = end_time - start_time;
 
-  //Wait for 1 minute before running the water level sensor again
-  delay(1000);
+        // Output the elapsed time
+        lcd.setCursor(0, 1);
+        lcd.print("Time elapsed: ");
+        lcd.print(elapsed_time / 1000);
+        lcd.print(" seconds");
+
+        // Update the start time for the next iteration
+        start_time = millis();
+    }
 }
