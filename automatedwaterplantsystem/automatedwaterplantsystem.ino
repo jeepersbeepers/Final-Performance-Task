@@ -34,6 +34,19 @@ void setup() {
 //MAIN LOOP
 void loop() {
   // put your main code here, to run repeatedly:
+  // Read the analog value from the sensor
+  int AIR_TEMP_HUMIDITYValue = analogRead(AIR_TEMP_HUMIDITY_SENSOR);
+
+  // Convert the analog value to voltage (assuming 5V reference)
+  float voltage = AIR_TEMP_HUMIDITYValue * (5.0 / 1023.0);
+
+  // Print the raw air temp and humidity sensor value and voltage to the serial monitor
+  Serial.print("Air Temp & Humidity Value: ");
+  Serial.print(AIR_TEMP_HUMIDITYValue);
+  Serial.print("\tVoltage: ");
+  Serial.println(voltage);
+  
+  
   int temperature = analogRead(AIR_TEMP_HUMIDITY_SENSOR);  // Read temperature
   int humidity = analogRead(AIR_TEMP_HUMIDITY_SENSOR);     // Read humidity
 
