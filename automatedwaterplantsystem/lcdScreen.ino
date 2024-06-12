@@ -7,14 +7,14 @@ void lcdScreen() {
   // Print a message to the LCD.
   lcd.print("WATER LEVEL: ");
 
-  if (resval <= 100) {
-    lcd.print("Empty!!!");
-  } else if (resval > 100 && resval <= 300) {
-    lcd.print("Low!!");
-  } else if (resval > 300 && resval <= 330) {
-    lcd.print("Medium");
-  } else if (resval > 330) {
-    lcd.print("High");
-  }
-  delay(1000);
+  // if (resval <= 100) {
+  //   lcd.print("Empty!!!");
+  // } else if (resval > 100 && resval <= 300) {
+  //   lcd.print("Low!!");
+  // } else if (resval > 300 && resval <= 330) {
+  //   lcd.print("Medium");
+  // } else if (resval > 330) {
+  //   lcd.print("High");
+  // }
+  // delay(1000);
 }

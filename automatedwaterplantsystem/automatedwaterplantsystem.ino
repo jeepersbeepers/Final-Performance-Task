@@ -5,7 +5,7 @@
 #define MAX_HUMIDITY 70          // max humidity level that plant reads to pump water
 #define WATERING_INTERVAL 60000  // Water every 60 seconds (1 minute)
 
-unsigned long lastWateringTime = 0; 
+unsigned long lastWateringTime = 0;
 
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>  // Include the Wire library
@@ -25,10 +25,10 @@ void setup() {
 
   // initialize the LCD
   lcd.begin(16, 2);
-  lcd.init();           // initialize the lcd
-  lcd.backlight();      // Turn on the backlight
-//  lcd.setCursor(0, 0);  // Set cursor to the top-left corner
- // lcd.setCursor(0, 1);  // Set cursor to the top-left corner
+  lcd.init();       // initialize the lcd
+  lcd.backlight();  // Turn on the backlight
+  //  lcd.setCursor(0, 0);  // Set cursor to the top-left corner
+  // lcd.setCursor(0, 1);  // Set cursor to the top-left corner
 }
 
 //MAIN LOOP
@@ -48,15 +48,28 @@ void loop() {
     delay(5000);
     digitalWrite(RELAY_PIN, LOW);
 
-    digitalWrite(RELAY_PIN, HIGH);    // Turn on pump to water plant
-    delay(5000);    // Watering duration for 5 seconds
-    digitalWrite(RELAY_PIN, LOW);     // Turn off pump
+    digitalWrite(RELAY_PIN, HIGH);  // Turn on pump to water plant
+    delay(5000);                    // Watering duration for 5 seconds
+    digitalWrite(RELAY_PIN, LOW);   // Turn off pump
     lastWateringTime = millis();
     Serial.println("Watering completed.");
   }
 
+  {
+    if (resval <= 100) {
+    lcd.print("Empty!!!");
+  } else if (resval > 100 && resval <= 300) {
+    lcd.print("Low!!");
+  } else if (resval > 300 && resval <= 330) {
+    lcd.print("Medium");
+  } else if (resval > 330) {
+    lcd.print("High");
+  }
+  delay(1000);
+  }
+  lcdScreen();        // Update LCD screen
   timeWaterSensor();  // Read Water Sensor
-  lcdScreen();    // Update LCD screen
+
 
   delay(1000);  // Adjust delay according to your needs
 }
