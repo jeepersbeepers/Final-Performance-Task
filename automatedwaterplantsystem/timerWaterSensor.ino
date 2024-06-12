@@ -1,4 +1,4 @@
-    #include <Wire.h>  // Include the Wire library
+#include <Wire.h> // Include the Wire library
 
 // Function to check water level (placeholder)
 void waterSensor() {
@@ -15,12 +15,12 @@ void loop() {
 
     while (true) {
         waterSensor(); // Call the function to check water level
-        
+
         // Wait for 10 seconds
         delay(10000);
 
         // Calculate how long it took to check the water level
-        unsigned long endTime = millis(); // Record end time
+        unsigned long endTime = millis();               // Record end time
         unsigned long elapsedTime = endTime - startTime; // Calculate elapsed time
 
         // Output the elapsed time
