@@ -5,7 +5,7 @@
 #define MAX_HUMIDITY 70    // max humidity level that plant reads to pump water
 #define WATERING_INTERVAL 60000 // Water every 60 seconds (1 minute)
 
-unsigned long lastWateringTime = 0;
+unsigned long lastWateringTime = 0; 
 
 void setup() {
   // put your setup code here, to run once:
@@ -26,9 +26,9 @@ int temperature = analogRead(AIR_TEMP_HUMIDITY_SENSOR); // Read temperature
 
  if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
     Serial.println("Temperature is high and air is dry. Starting watering...");
-    digitalWrite(RELAY_PIN, HIGH);
-    delay(5000); 
-    digitalWrite(RELAY_PIN, LOW);
+    digitalWrite(RELAY_PIN, HIGH);    // Turn on pump to water plant
+    delay(5000);    // Watering duration for 5 seconds
+    digitalWrite(RELAY_PIN, LOW);     // Turn off pump
     lastWateringTime = millis();
     Serial.println("Watering completed.");
   }
