@@ -38,3 +38,19 @@
 // }
 
 
+<<<<<<< HEAD
+=======
+  if (resval <= 100) {
+    lcd.println("Empty!!!");
+  } else if (resval > 100 && resval <= 300) {
+    lcd.println("Low!!");
+  } else if (resval > 300 && resval <= 330) {
+    lcd.println("Medium");
+  } else if (resval > 330) {
+    lcd.println("High");
+  }
+  delay(1000);
+}
+
+
+>>>>>>> e4860a4083b36276e41ee1290b7f92c240679d0a
