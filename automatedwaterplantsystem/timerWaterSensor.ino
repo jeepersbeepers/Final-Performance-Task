@@ -1,28 +1,34 @@
-import time
+#include <Wire.h> // Include the Wire library
 
-def water_sensor():
-    #Placeholder for checking water level
-    print("Checking water level...")
+// Function to check water level (placeholder)
+void waterSensor() {
+    // Placeholder for checking water level
+    Serial.println("Checking water level...");
+}
 
-def main():
-    #Initial time;
-    start_time = time.time()
+void setup() {
+    Serial.begin(9600); // Initialize serial communication at 9600 baud rate
+}
 
-    while True:
-        water_sensor()
-        
-        #Wait for 10 seconds
-        time.sleep(10)
+void loop() {
+    unsigned long startTime = millis(); // Record start time
 
-        #Calculate how long it took to check the water level
-        end_time = time.time();
-        elapsed_time = end_time - start_time
+    while (true) {
+        waterSensor(); // Call the function to check water level
 
-        #Output the elapsed time
-        print("Time elapsed since last check: {} seconds".format(elapsed_time))
+        // Wait for 10 seconds
+        delay(10000);
 
-        #Update the start time for the next iteration
-        start_time = time.time()
+        // Calculate how long it took to check the water level
+        unsigned long endTime = millis();               // Record end time
+        unsigned long elapsedTime = endTime - startTime; // Calculate elapsed time
 
-if __name__ == "__main__":
-    main()
+        // Output the elapsed time
+        Serial.print("Time elapsed since last check: ");
+        Serial.print(elapsedTime / 1000); // Convert milliseconds to seconds
+        Serial.println(" seconds");
+
+        // Update the start time for the next iteration
+        startTime = millis();
+    }
+}
