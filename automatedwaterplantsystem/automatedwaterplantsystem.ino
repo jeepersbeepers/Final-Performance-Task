@@ -1,8 +1,8 @@
 #define RELAY_PIN 7
 #define AIR_TEMP_HUMIDITY_SENSOR A0
 
-#define MAX_TEMPERATURE 30       // max air temperature that plant reads to pump water
-#define MAX_HUMIDITY 70          // max humidity level that plant reads to pump water
+#define MAX_TEMPERATURE 25       // max air temperature that plant reads to pump water
+#define MAX_HUMIDITY 60          // max humidity level that plant reads to pump water
 #define WATERING_INTERVAL 60000  // Water every 60 seconds (1 minute)
 
 unsigned long lastWateringTime = 0; 
