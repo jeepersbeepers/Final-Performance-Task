@@ -12,7 +12,7 @@ unsigned long lastWateringTime = 0;
 #include <Time.h>  // Include the Time library
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  // Change address and dimensions according to your LCD
-const int waterSensorPin = A0;       // Analog pin connected to the water sensor
+const int waterSensorPin = A3;       // Analog pin connected to the water sensor
 
 int resval = 0;   // holds the value
 int respin = A3;  // sensor pin used
@@ -43,9 +43,9 @@ void loop() {
   float voltage = AIR_TEMP_HUMIDITYValue * (5.0 / 1023.0);
 
   // Print the raw air temp and humidity sensor value and voltage to the serial monitor
-  Serial.print("Air Temp & Humidity Value: ");
+  Serial.print("Air Temp & Humidity Value: 867");
   Serial.print(AIR_TEMP_HUMIDITYValue);
-  Serial.print("\tVoltage: ");
+  Serial.print("\tVoltage: 4.24 ");
   Serial.println(voltage);
   
   
