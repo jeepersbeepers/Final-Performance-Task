@@ -1,5 +1,6 @@
 #define RELAY_PIN 7
 #define AIR_TEMP_HUMIDITY_SENSOR A0
+#define WATER_SENSOR A3
 
 #define MAX_TEMPERATURE 25       // max air temperature that plant reads to pump water
 #define MAX_HUMIDITY 60          // max humidity level that plant reads to pump water
@@ -13,15 +14,20 @@ unsigned long lastWateringTime = 0;
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  // Change address and dimensions according to your LCD
 const int waterSensorPin = A3;       // Analog pin connected to the water sensor
+<<<<<<< HEAD
+=======
 
 int resval = 0;   // holds the value
 int respin = A3;  // sensor pin used
+>>>>>>> 64a6be14c37b6977f49e9b13bf551218fb4de697
 
 // MAIN SETUP
 void setup() {
   // put your setup code here, to run once:
   pinMode(AIR_TEMP_HUMIDITY_SENSOR, INPUT);
   pinMode(RELAY_PIN, OUTPUT);
+  pinMode(WATER_SENSOR, INPUT);
+
   Serial.begin(9600);
 
   // initialize the LCD
@@ -35,6 +41,37 @@ void setup() {
 
 //MAIN LOOP
 void loop() {
+
+  float WATER_SENSORValue = analogRead(WATER_SENSOR);
+
+  // Read the analog value from the water sensor
+  int waterLevel = analogRead(waterSensorPin);
+
+  // Determine water level range and print corresponding message on LCD
+  if (waterLevel >= 7 && waterLevel <= 345) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Water Level: Empty");
+  } else if (waterLevel >= 346 && waterLevel <= 371) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Water Level: Good");
+  } else if (waterLevel >= 372 && waterLevel <= 394) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Water Level: Full");
+  }
+
+  // Print water level to the serial monitor for debugging
+  Serial.print("Water Level: ");
+  Serial.println(waterLevel);
+
+   // Add a short delay before reading again
+   delay(100);  // Adjust delay as needed
+
+  Serial.print("Water Sensor Reading: ");
+  Serial.println(WATER_SENSORValue);
+
   // put your main code here, to run repeatedly:
   // Read the analog value from the sensor
   int AIR_TEMP_HUMIDITYValue = analogRead(AIR_TEMP_HUMIDITY_SENSOR);
@@ -47,8 +84,8 @@ void loop() {
   Serial.print(AIR_TEMP_HUMIDITYValue);
   Serial.print("\tVoltage: 4.24 ");
   Serial.println(voltage);
-  
-  
+
+
   int temperature = analogRead(AIR_TEMP_HUMIDITY_SENSOR);  // Read temperature
   int humidity = analogRead(AIR_TEMP_HUMIDITY_SENSOR);     // Read humidity
 
@@ -78,25 +115,13 @@ void loop() {
 
     // Print water level on LCD
     lcd.setCursor(0, 1);
-    lcd.print("   ");  // Clear the line
+    lcd.print("  ");  // Clear the line
     lcd.setCursor(0, 1);
     lcd.print(percentage);
     lcd.print("%");
 
     // Wait a short delay before reading again
     delay(1000);  // Adjust delay as needed
-  }
-  {
-    if (resval <= 100) {
-      lcd.print("Empty!!!");
-    } else if (resval > 100 && resval <= 300) {
-      lcd.print("Low!!");
-    } else if (resval > 300 && resval <= 330) {
-      lcd.print("Medium");
-    } else if (resval > 330) {
-      lcd.print("High");
-    }
-    delay(1000);
   }
   lcdScreen();        // Update LCD screen
   timeWaterSensor();  // Read Water Sensor
