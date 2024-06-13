@@ -1,11 +1,11 @@
 void timeWaterSensor() {
   unsigned long startTime = millis();  // Record start time
 
-  while (true) {
+  //while (true) {
     Serial.println("Checking water level...");
 
     // Wait for 10 seconds
-    delay(10000);
+    delay(100);
 
     // Calculate how long it took to check the water level
     unsigned long endTime = millis();                 // Record end time
@@ -18,5 +18,5 @@ void timeWaterSensor() {
 
     // Update the start time for the next iteration
     startTime = millis();
-  }
+ // }
 }

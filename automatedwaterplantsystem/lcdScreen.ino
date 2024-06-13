@@ -2,7 +2,7 @@ void lcdScreen() {
   // Set the cursor to column 0, line 1
   lcd.setCursor(0, 1);
 
-  resval = analogRead(respin);  // Read data from analog pin and store it in resval variable
+  // resval = analogRead(respin);  // Read data from analog pin and store it in resval variable
 
   // Print a message to the LCD.
   lcd.print("WATER LEVEL: ");
