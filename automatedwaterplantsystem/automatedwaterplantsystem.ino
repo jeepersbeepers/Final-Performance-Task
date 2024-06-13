@@ -12,6 +12,7 @@ unsigned long lastWateringTime = 0;
 #include <Time.h>  // Include the Time library
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  // Change address and dimensions according to your LCD
+const int waterSensorPin = A0;       // Analog pin connected to the water sensor
 
 int resval = 0;   // holds the value
 int respin = A3;  // sensor pin used
@@ -24,11 +25,12 @@ void setup() {
   Serial.begin(9600);
 
   // initialize the LCD
-  lcd.begin(16, 2);
-  lcd.init();       // initialize the lcd
-  lcd.backlight();  // Turn on the backlight
-  //  lcd.setCursor(0, 0);  // Set cursor to the top-left corner
-  // lcd.setCursor(0, 1);  // Set cursor to the top-left corner
+  lcd.init();       // Initialize the LCD
+  lcd.backlight();  // Turn on backlight
+  lcd.setCursor(0, 0);
+  lcd.print("Water Level:");
+
+  pinMode(waterSensorPin, INPUT);  // Set water sensor pin as input
 }
 
 //MAIN LOOP
@@ -67,18 +69,34 @@ void loop() {
     lastWateringTime = millis();
     Serial.println("Watering completed.");
   }
+  {
+    // Read water sensor value
+    int waterLevel = analogRead(waterSensorPin);
 
+    // Convert analog reading to percentage (assuming full range is 0-1023)
+    int percentage = map(waterLevel, 0, 1023, 0, 100);
+
+    // Print water level on LCD
+    lcd.setCursor(0, 1);
+    lcd.print("   ");  // Clear the line
+    lcd.setCursor(0, 1);
+    lcd.print(percentage);
+    lcd.print("%");
+
+    // Wait a short delay before reading again
+    delay(1000);  // Adjust delay as needed
+  }
   {
     if (resval <= 100) {
-    lcd.print("Empty!!!");
-  } else if (resval > 100 && resval <= 300) {
-    lcd.print("Low!!");
-  } else if (resval > 300 && resval <= 330) {
-    lcd.print("Medium");
-  } else if (resval > 330) {
-    lcd.print("High");
-  }
-  delay(1000);
+      lcd.print("Empty!!!");
+    } else if (resval > 100 && resval <= 300) {
+      lcd.print("Low!!");
+    } else if (resval > 300 && resval <= 330) {
+      lcd.print("Medium");
+    } else if (resval > 330) {
+      lcd.print("High");
+    }
+    delay(1000);
   }
   lcdScreen();        // Update LCD screen
   timeWaterSensor();  // Read Water Sensor
