@@ -73,6 +73,7 @@ void loop() {
     lastWateringTime = millis();
     Serial.println("Watering completed.");
   }
+delay(1000);
 
   float WATER_SENSORValue = analogRead(WATER_SENSOR);
 
