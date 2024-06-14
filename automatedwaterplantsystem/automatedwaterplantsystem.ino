@@ -16,8 +16,6 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  // Change address and dimensions according 
 const int waterSensorPin = A3;       // Analog pin connected to the water sensor
 
 
-int resval = 0;   // holds the value
-int respin = A3;  // sensor pin used
 // MAIN SETUP
 void setup() {
   // put your setup code here, to run once:
