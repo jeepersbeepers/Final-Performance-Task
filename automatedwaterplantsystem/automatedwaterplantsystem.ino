@@ -1,6 +1,10 @@
+#include <DHT.h>
+#include <DHT_U.h>
+
 #define RELAY_PIN 7
 #define AIR_TEMP_HUMIDITY_SENSOR A0
 #define WATER_SENSOR A3
+
 
 #define MAX_TEMPERATURE 25       // max air temperature that plant reads to pump water
 #define MAX_HUMIDITY 60          // max humidity level that plant reads to pump water
@@ -12,9 +16,9 @@ unsigned long lastWateringTime = 0;
 #include <Wire.h>  // Include the Wire library
 #include <Time.h>  // Include the Time library
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);  // Change address and dimensions according to your LCD
-const int waterSensorPin = A3;       // Analog pin connected to the water sensor
-
+LiquidCrystal_I2C lcd(0x27, 16, 2);        // Initialize LCD with I2C address
+const int waterSensorPin = A3;             // Analog pin connected to the water sensor
+DHT dht(AIR_TEMP_HUMIDITY_SENSOR, DHT11);  // Initialize DHT sensor
 
 // MAIN SETUP
 void setup() {
@@ -26,16 +30,49 @@ void setup() {
   Serial.begin(9600);
 
   // initialize the LCD
-  lcd.init();       // Initialize the LCD
-  lcd.backlight();  // Turn on backlight
-  lcd.setCursor(0, 0);
-  lcd.print("Water Level:");
+  lcd.init();                 // Initialize the LCD
+  lcd.backlight();            // Turn on backlight
+  lcd.setCursor(0, 0);        // Set cursor to first row
+  lcd.print("Water Level:");  // Display initial message
+  dht.begin();                // Initialize DHT sensor
 
   pinMode(waterSensorPin, INPUT);  // Set water sensor pin as input
 }
 
 //MAIN LOOP
 void loop() {
+  // Read temperature and humidity from DHT sensor
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  // put your main code here, to run repeatedly:
+  // Read the analog value from the sensor
+  int AIR_TEMP_HUMIDITYValue = analogRead(AIR_TEMP_HUMIDITY_SENSOR);
+
+  // Convert the analog value to voltage (assuming 5V reference)
+  float voltage = AIR_TEMP_HUMIDITYValue * (5.0 / 1023.0);
+
+  // Print the raw air temp and humidity sensor value and voltage to the serial monitor
+  Serial.print("Air Temp & Humidity Value: 867");
+  Serial.print(AIR_TEMP_HUMIDITYValue);
+  Serial.print("\tVoltage: 4.24 ");
+  Serial.println(voltage);
+
+  // Convert analog readings to actual values (assuming linear scaling)
+  float temperatureValue = map(temperature, 0, 1023, 0, 50);  // Scale to 0-50°C
+  float humidityValue = map(humidity, 0, 1023, 0, 100);       // Scale to 0-100%
+
+  if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
+    Serial.println("Temperature is high and air is dry. Starting watering...");
+    lcd.setCursor(0, 0);       // Set cursor to first row
+    lcd.print("Watering...");  // Display watering message
+
+    digitalWrite(RELAY_PIN, HIGH);  // Turn on pump to water plant
+    delay(5000);                    // Watering duration for 5 seconds
+    digitalWrite(RELAY_PIN, LOW);   // Turn off pump
+    lastWateringTime = millis();
+    Serial.println("Watering completed.");
+  }
 
   float WATER_SENSORValue = analogRead(WATER_SENSOR);
 
@@ -61,46 +98,13 @@ void loop() {
   Serial.print("Water Level: ");
   Serial.println(waterLevel);
 
-   // Add a short delay before reading again
-   delay(100);  // Adjust delay as needed
+  // Add a short delay before reading again
+  delay(100);  // Adjust delay as needed
 
   Serial.print("Water Sensor Reading: ");
   Serial.println(WATER_SENSORValue);
 
-  // put your main code here, to run repeatedly:
-  // Read the analog value from the sensor
-  int AIR_TEMP_HUMIDITYValue = analogRead(AIR_TEMP_HUMIDITY_SENSOR);
 
-  // Convert the analog value to voltage (assuming 5V reference)
-  float voltage = AIR_TEMP_HUMIDITYValue * (5.0 / 1023.0);
-
-  // Print the raw air temp and humidity sensor value and voltage to the serial monitor
-  Serial.print("Air Temp & Humidity Value: 867");
-  Serial.print(AIR_TEMP_HUMIDITYValue);
-  Serial.print("\tVoltage: 4.24 ");
-  Serial.println(voltage);
-
-
-  int temperature = analogRead(AIR_TEMP_HUMIDITY_SENSOR);  // Read temperature
-  int humidity = analogRead(AIR_TEMP_HUMIDITY_SENSOR);     // Read humidity
-
-  // Convert analog readings to actual values (assuming linear scaling)
-  float temperatureValue = map(temperature, 0, 1023, 0, 50);  // Scale to 0-50°C
-  float humidityValue = map(humidity, 0, 1023, 0, 100);       // Scale to 0-100%
-
-  if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
-    Serial.println("Temperature is high and air is dry. Starting watering...");
-
-    digitalWrite(RELAY_PIN, HIGH);
-    delay(5000);
-    digitalWrite(RELAY_PIN, LOW);
-
-    digitalWrite(RELAY_PIN, HIGH);  // Turn on pump to water plant
-    delay(5000);                    // Watering duration for 5 seconds
-    digitalWrite(RELAY_PIN, LOW);   // Turn off pump
-    lastWateringTime = millis();
-    Serial.println("Watering completed.");
-  }
   {
     // Read water sensor value
     int waterLevel = analogRead(waterSensorPin);
