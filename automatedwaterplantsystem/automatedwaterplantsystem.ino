@@ -81,15 +81,15 @@ delay(1000);
   int waterLevel = analogRead(waterSensorPin);
 
   // Determine water level range and print corresponding message on LCD
-  if (waterLevel >= 7 && waterLevel <= 345) {
+  if (waterLevel >= 7 && waterLevel <= 331) {  
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Water Level: Empty");
-  } else if (waterLevel >= 346 && waterLevel <= 371) {
+  } else if (waterLevel >= 332 && waterLevel <= 358) {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Water Level: Good");
-  } else if (waterLevel >= 372 && waterLevel <= 394) {
+  } else if (waterLevel >= 359 && waterLevel <= 394) {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Water Level: Full");
