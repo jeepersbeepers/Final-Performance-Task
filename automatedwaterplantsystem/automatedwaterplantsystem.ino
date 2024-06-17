@@ -18,6 +18,7 @@ unsigned long lastWateringTime = 0;
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);        // Initialize LCD with I2C address
 const int waterSensorPin = A3;             // Analog pin connected to the water sensor
+// const int RELAY_PIN = 7;                   // Digital pin connected to the relay controlling water pump
 DHT dht(AIR_TEMP_HUMIDITY_SENSOR, DHT11);  // Initialize DHT sensor
 
 // MAIN SETUP
@@ -34,7 +35,12 @@ void setup() {
   lcd.backlight();            // Turn on backlight
   lcd.setCursor(0, 0);        // Set cursor to first row
   lcd.print("Water Level:");  // Display initial message
-  dht.begin();                // Initialize DHT sensor
+  lcd.setCursor(0, 1);
+  lcd.print("Temp");
+  lcd.setCursor(0, 0);
+  lcd.print("Humidity:");
+  lcd.setCursor(0, 1);
+  dht.begin();  // Initialize DHT sensor
 
   pinMode(waterSensorPin, INPUT);  // Set water sensor pin as input
 }
@@ -52,8 +58,17 @@ void loop() {
   // Convert the analog value to voltage (assuming 5V reference)
   float voltage = AIR_TEMP_HUMIDITYValue * (5.0 / 1023.0);
 
+  // // Display temperature and humidity on LCD
+  // lcd.setCursor(6, 0);
+  // lcd.print(temperatureValue);
+  // lcd.print(" C ");
+
+  // lcd.setCursor(10, 1);
+  // lcd.print(humidityValue);
+  // lcd.print(" % ");
+
   // Print the raw air temp and humidity sensor value and voltage to the serial monitor
-  Serial.print("Air Temp & Humidity Value: 867");
+  Serial.print("Air Temp & Humidity Value: 867825");
   Serial.print(AIR_TEMP_HUMIDITYValue);
   Serial.print("\tVoltage: 4.24 ");
   Serial.println(voltage);
@@ -62,18 +77,31 @@ void loop() {
   float temperatureValue = map(temperature, 0, 1023, 25, 50);  // Scale to 0-50°C
   float humidityValue = map(humidity, 0, 1023, 60, 100);       // Scale to 0-100%
 
-  if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
-    Serial.println("Temperature is high and air is dry. Starting watering...");
-    lcd.setCursor(0, 0);       // Set cursor to first row
-    lcd.print("Watering...");  // Display watering message
-
-    digitalWrite(RELAY_PIN, HIGH);  // Turn on pump to water plant
-    delay(5000);                    // Watering duration for 5 seconds
-    digitalWrite(RELAY_PIN, LOW);   // Turn off pump
-    lastWateringTime = millis();
-    Serial.println("Watering completed.");
+  if (humidity >= 60) {
+    digitalWrite(RELAY_PIN, HIGH);  // Turn on relay (activating water pump)
+    lcd.setCursor(0, 3);
+    lcd.print("Water Pump: ON ");
+  } else {
+    digitalWrite(RELAY_PIN, LOW);  // Turn off relay (deactivating water pump)
+    lcd.setCursor(0, 3);
+    lcd.print("Water Pump: OFF");
   }
-delay(1000);
+  delay(1000);  // Delay for a second (adjust as needed)
+
+
+  // if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
+  //   Serial.println("Temperature is high and air is dry. Starting watering...");
+  //   lcd.clear();
+  //   lcd.setCursor(0, 0);       // Set cursor to first row
+  //   lcd.print("Watering...");  // Display watering message
+
+  //   digitalWrite(RELAY_PIN, HIGH);  // Turn on pump to water plant
+  //   delay(5000);                    // Watering duration for 5 seconds
+  //   digitalWrite(RELAY_PIN, LOW);   // Turn off pump
+  //   lastWateringTime = millis();
+  //   Serial.println("Watering completed.");
+  // }
+  // delay(1000);
 
   float WATER_SENSORValue = analogRead(WATER_SENSOR);
 
@@ -81,7 +109,7 @@ delay(1000);
   int waterLevel = analogRead(waterSensorPin);
 
   // Determine water level range and print corresponding message on LCD
-  if (waterLevel >= 7 && waterLevel <= 331) {  
+  if (waterLevel >= 7 && waterLevel <= 331) {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Water Level: Empty");
