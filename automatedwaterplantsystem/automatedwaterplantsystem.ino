@@ -59,8 +59,8 @@ void loop() {
   Serial.println(voltage);
 
   // Convert analog readings to actual values (assuming linear scaling)
-  float temperatureValue = map(temperature, 0, 1023, 0, 50);  // Scale to 0-50°C
-  float humidityValue = map(humidity, 0, 1023, 0, 100);       // Scale to 0-100%
+  float temperatureValue = map(temperature, 0, 1023, 25, 50);  // Scale to 0-50°C
+  float humidityValue = map(humidity, 0, 1023, 60, 100);       // Scale to 0-100%
 
   if (temperatureValue >= MAX_TEMPERATURE && humidityValue <= MAX_HUMIDITY && millis() - lastWateringTime >= WATERING_INTERVAL) {
     Serial.println("Temperature is high and air is dry. Starting watering...");
